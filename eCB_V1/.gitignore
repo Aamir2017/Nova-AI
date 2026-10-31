@@ -1,0 +1,17 @@
+# Python Virtual Environments
+venv/
+env/
+
+# Rasa Models and Cache
+models/
+.rasa/
+
+# ChromaDB Vector Database
+vector_store/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# OS Files
+.DS_Store 

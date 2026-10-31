@@ -1,0 +1,30 @@
+# ============================================================================
+# endpoints.yml — External Service Endpoints
+# ============================================================================
+# Tells the Rasa server where to find external services it depends on.
+#
+# action_endpoint:
+#   The Rasa SDK Action Server that executes custom actions defined in
+#   actions/actions.py.  By default, `rasa run actions` starts the server
+#   on http://localhost:5055/webhook.
+#
+# Other endpoints (commented out) can be configured for:
+#   • tracker_store  — Persist conversation history to a database
+#   • event_broker   — Stream conversation events to Kafka / RabbitMQ
+#   • lock_store     — Distributed locking for multi-instance deployments
+# ============================================================================
+
+action_endpoint:
+  url: "http://localhost:5055/webhook"   # Rasa SDK action server address
+
+# tracker_store:
+#   type: SQL
+#   dialect: "sqlite"
+#   db: "tracker.db"
+
+# event_broker:
+#   type: "pika"
+#   url: "localhost"
+#   username: "guest"
+#   password: "guest"
+#   queue: "rasa_events"

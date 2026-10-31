@@ -1,0 +1,22 @@
+# Changelog - Nova AI E-commerce Chatbot
+
+## [1.7] - 2026-10-31
+
+### Added
+- **System Intelligence Report**: Added a new Rasa intent (`generate_admin_report`) and corresponding action (`action_generate_admin_report`) to generate a PDF snapshot of low stock inventory and active promotions.
+- **Role-Based Access Control (RBAC)**: Integrated a centralized `_get_verified_user` function to strictly enforce admin-only access for generating reports, checking other users' orders, and processing cancellations.
+- **Automated AI Buying Verdict**: Enhanced the `action_compare_products` action with an AI-generated verdict comparing ratings and prices to offer actionable recommendations.
+- **Enhanced Entity Roles & Groups**: Upgraded `domain.yml` and `nlu.yml` with advanced entity roles (`compare_1`, `compare_2`, `min`, `max`) and groups (for quantities and products) to support complex multi-item queries.
+- **Story Checkpoints & OR Statements**: Introduced story checkpoints (`discovery_completed`) and OR statements in `stories.yml` to create non-linear, multi-turn conversational paths.
+
+### Changed
+- **Flask Vector API (`app.py`)**: Migrated to `app.py` as the primary vector search API.
+- **Vector Search Engine**: Upgraded the product vector sync to handle an 8-table MySQL schema, embedding a rich semantic document combining brand, name, category, and description.
+- **Semantic Distance Guardrails**: Implemented strict mathematical thresholds in the `/search` endpoint to filter out irrelevant products and prevent vector padding.
+- **RAG FAQ Engine**: Refined the `/faq` endpoint to process chunked policy documents and utilize a local Phi-3 LLM via Ollama for zero-cost, enterprise-grade policy retrieval.
+- **Coupon Validation Logic**: Updated `action_check_coupons` to dynamically enforce tier restrictions (e.g., `PRIME30` for Prime/Admin only) and minimum order values.
+
+### Fixed
+- **Order Cancellation State Guardrail**: Fortified `action_cancel_order` to prevent cancellations for orders that are already marked as Shipped, Out for Delivery, or Delivered.
+- **Return Policy Window Enforcement**: Hardened `ValidateOrderReturnForm` to automatically reject return requests exceeding the 30-day window and escalate them to support tickets instead.
+- **Live Support Escalation Logging**: Fixed the issue category enum in `action_support_ticket` to correctly log 'Bot Escalation' events.

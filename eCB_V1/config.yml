@@ -1,0 +1,59 @@
+# ============================================================================
+# config.yml
+# ============================================================================
+
+recipe: default.v1
+language: en
+
+pipeline:
+  # 1. Tokenizer
+  - name: WhitespaceTokenizer
+
+  # 2. Featurizers (Regex + Syntactic Position + Word & Typo Char N-Grams)
+  - name: RegexFeaturizer
+  - name: LexicalSyntacticFeaturizer
+  - name: CountVectorsFeaturizer
+  - name: CountVectorsFeaturizer
+    analyzer: char_wb
+    min_ngram: 1
+    max_ngram: 4
+
+  # 3. Joint Intent + Entity + Role + Group Transformer
+  - name: DIETClassifier
+    epochs: 120
+    constrain_similarities: true
+    model_confidence: softmax
+
+  # 4. Deterministic Lookup Table & Regex Extractor
+  - name: RegexEntityExtractor
+    case_sensitive: false
+    use_lookup_tables: true
+    use_regexes: true
+
+  # 5. Canonical Synonym Normalizer
+  - name: EntitySynonymMapper
+
+  # 6. Retrieval Intent Selector
+  - name: ResponseSelector
+    epochs: 120
+
+  # 7. Confidence Threshold Guardrail
+  - name: FallbackClassifier
+    threshold: 0.35
+    ambiguity_threshold: 0.1
+
+policies:
+  - name: MemoizationPolicy
+    max_history: 6
+
+  - name: RulePolicy
+    core_fallback_threshold: 0.3
+    core_fallback_action_name: "action_default_fallback"
+    enable_fallback_prediction: true
+
+  - name: TEDPolicy
+    max_history: 8
+    epochs: 120
+    constrain_similarities: true
+
+assistant_id: 20261024-231343-canary-magnitude

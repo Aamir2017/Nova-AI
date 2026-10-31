@@ -1,0 +1,139 @@
+# ============================================================================
+# data/stories.yml — Multi-Turn Stories with Checkpoints, OR & Slot Conditions
+# ============================================================================
+version: "3.1"
+
+stories:
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  PRE-PURCHASE DISCOVERY WITH STORY CHECKPOINTS & OR STATEMENTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- story: search then compare products (leads to checkpoint)
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: search_product
+      entities:
+        - product_name: "monitor"
+    - action: action_search_product
+    - intent: compare_products
+      entities:
+        - product_name: "UltraGear"
+        - product_name: "Odyssey"
+    - action: action_compare_products
+    - checkpoint: discovery_completed
+
+- story: direct comparison (leads to checkpoint)
+  steps:
+    - intent: compare_products
+    - action: action_compare_products
+    - checkpoint: discovery_completed
+
+- story: continue from discovery checkpoint to coupon check with OR statement
+  steps:
+    - checkpoint: discovery_completed
+    - intent: check_coupons
+      entities:
+        - coupon_code: "PRIME30"
+    - action: action_check_coupons
+    - or:
+        - intent: thank_you
+        - intent: affirm
+    - action: utter_you_are_welcome
+    - intent: goodbye
+    - action: utter_goodbye
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SLOT-INFLUENCED STORIES (user_tier: Prime vs Standard)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- story: Prime user checks wallet then applies Prime coupon
+  steps:
+    - intent: check_wallet
+    - action: action_check_wallet
+    - slot_was_set:
+        - user_tier: "Prime"
+    - intent: check_coupons
+      entities:
+        - coupon_code: "PRIME30"
+    - action: action_check_coupons
+    - intent: thank_you
+    - action: utter_you_are_welcome
+
+- story: Standard user checks order then attempts cancellation
+  steps:
+    - intent: check_order_status
+      entities:
+        - order_id: "5"
+    - action: action_check_order_status
+    - slot_was_set:
+        - user_tier: "Standard"
+    - intent: cancel_order
+      entities:
+        - order_id: "5"
+    - action: action_cancel_order
+    - intent: support_ticket
+    - action: action_support_ticket
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  RETURN FORM & MULTI-GOAL STORIES 
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- story: return order happy path
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: request_return
+    - action: order_return_form
+    - active_loop: order_return_form
+    - intent: inform
+      entities:
+        - order_id: "5"
+    - action: order_return_form
+    - intent: inform
+      entities:
+        - reason_for_return: "defective product"
+    - action: order_return_form
+    - active_loop: null
+    - action: action_submit_return
+    - intent: check_wallet
+    - action: action_check_wallet
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: return with prefilled order id
+  steps:
+    - intent: request_return
+      entities:
+        - order_id: "12"
+    - action: order_return_form
+    - active_loop: order_return_form
+    - intent: inform
+      entities:
+        - reason_for_return: "wrong item received"
+    - action: order_return_form
+    - active_loop: null
+    - action: action_submit_return
+
+- story: order check then return
+  steps:
+    - intent: check_order_status
+      entities:
+        - order_id: "7"
+    - action: action_check_order_status
+    - intent: request_return
+      entities:
+        - order_id: "7"
+    - action: order_return_form
+    - active_loop: order_return_form
+    - intent: inform
+      entities:
+        - reason_for_return: "arrived damaged"
+    - action: order_return_form
+    - active_loop: null
+    - action: action_submit_return
+    - or:
+        - intent: thank_you
+        - intent: affirm
+    - action: utter_you_are_welcome

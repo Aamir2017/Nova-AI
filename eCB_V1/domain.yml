@@ -1,0 +1,226 @@
+# ============================================================================
+# domain.yml
+# ============================================================================
+
+version: "3.1"
+
+# ── Intents ──────────────────────────────────────────────────────────────────
+intents:
+  - greet
+  - goodbye
+  - thank_you
+  - affirm
+  - bot_challenge
+  - search_product
+  - compare_products
+  - check_coupons
+  - check_order_status
+  - cancel_order
+  - request_return
+  - check_wallet
+  - support_ticket
+  - inform
+  - out_of_scope
+  - nlu_fallback
+  - cancel
+  - ask_policy
+  - generate_admin_report
+  
+
+# ── Entities (With Roles, Groups, Lookups & Regexes) ─────────────────────────
+entities:
+  - product_name:
+      roles:
+        - compare_1
+        - compare_2
+      groups:
+        - "1"
+        - "2"
+  - price:
+      roles:
+        - min
+        - max
+  - quantity:
+      groups:
+        - "1"
+        - "2"
+  - brand
+  - coupon_code
+  - order_id
+  - tracking_number
+  - reason_for_return
+
+# ── Slots (Role-Constrained, Categorical & Conditional Form Mappings) ────────
+slots:
+  user_tier:
+    type: categorical
+    values:
+      - Standard
+      - Prime
+      - Admin
+    influence_conversation: true
+    mappings:
+      - type: custom
+
+  product_name:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: product_name
+
+  compare_item_1:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: product_name
+        role: compare_1
+
+  compare_item_2:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: product_name
+        role: compare_2
+
+  brand:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: brand
+
+  coupon_code:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: coupon_code
+
+  min_price:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: price
+        role: min
+
+  max_price:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: price
+        role: max
+
+  order_id:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: order_id
+
+  tracking_number:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: tracking_number
+
+  reason_for_return:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: reason_for_return
+      - type: from_text
+        not_intent: cancel
+        conditions:
+          - active_loop: order_return_form
+            requested_slot: reason_for_return
+
+  requested_slot:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+# ── Forms ────────────────────────────────────────────────────────────────────
+forms:
+  order_return_form:
+    required_slots:
+      - order_id
+      - reason_for_return
+
+# ── Responses (With Conditional Variations & Quick-Reply Buttons) ────────────
+responses:
+  utter_greet:
+    - condition:
+        - type: slot
+          name: user_tier
+          value: Prime
+      text: "Welcome back, Prime Member! ⚡ You have Instant Wallet Refunds and exclusive PRIME30 discounts active. How can I help you today?"
+    - text: "Hello! 👋 Welcome to Nova E-Commerce. I can help you search or compare products, check active coupons, track or cancel orders, and process instant returns. What would you like to do?"
+    - text: "Hi there! 😊 I'm Nova, your AI shopping assistant. Ask me to compare hardware specs, check your Nova Wallet, track packages, or answer store policies!"
+
+  utter_goodbye:
+    - text: "Goodbye! Thanks for visiting Nova E-Commerce. Have a great day! 🛒"
+    - text: "See you later! Feel free to reach out anytime. 👋"
+    - text: "Bye! Hope I was helpful. Take care! 😊"
+
+  utter_you_are_welcome:
+    - condition:
+        - type: slot
+          name: user_tier
+          value: Prime
+      text: "Always a pleasure helping a Nova Prime member! ⚡ Let me know if you need anything else."
+    - text: "You're welcome! 😊 Is there anything else I can help with?"
+    - text: "Happy to help! Let me know if you need anything else."
+
+  utter_iamabot:
+    - text: "I am Nova 🤖, an enterprise AI e-commerce assistant powered by Rasa 3.x, an 8-table MySQL schema, ChromaDB vector search, and local Phi-3 RAG. How can I help you today?"
+
+  utter_ask_order_id:
+    - text: "Sure, I can help with that return. What is your **Order ID** (e.g., 1, 2, 3)? 📋"
+
+  utter_ask_reason_for_return:
+    - text: "Got it. Could you briefly describe the **reason for the return**? (e.g., defective item, wrong item received, changed mind)"
+
+  utter_out_of_scope:
+    - text: "I appreciate the question, but I'm trained specifically for Nova E-Commerce—product search, spec comparisons, coupons, order tracking, and returns. How can I help you shop today? 🤔"
+
+  utter_cancelled:
+    - text: "Got it, I've cancelled that process. What would you like to do instead?"
+
+  utter_default:
+    - text: "I didn't quite catch that. Here are the main things I can do for you:"
+      buttons:
+        - title: "🔍 Search Monitors < $320"
+          payload: '/search_product{"product_name": "monitor", "price": "320"}'
+        - title: "⚖️ Compare Monitors"
+          payload: '/compare_products'
+        - title: "🎟️ View Promo Coupons"
+          payload: '/check_coupons'
+        - title: "📦 My Orders"
+          payload: '/check_order_status'
+
+# ── Actions ──────────────────────────────────────────────────────────────────
+actions:
+  - action_search_product
+  - action_compare_products
+  - action_check_coupons
+  - action_check_order_status
+  - action_cancel_order
+  - action_submit_return
+  - validate_order_return_form
+  - action_answer_faq
+  - action_check_wallet
+  - action_support_ticket
+  - action_generate_admin_report
+
+# ── Session Configuration ────────────────────────────────────────────────────
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

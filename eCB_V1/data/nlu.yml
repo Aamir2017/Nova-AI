@@ -1,0 +1,413 @@
+# ============================================================================
+# data/nlu.yml 
+# ============================================================================
+
+version: "3.1"
+
+nlu:
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  CORE INTENTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - hey there
+    - hi bot
+    - greetings
+    - what's up
+    - howdy
+    - yo
+    - sup
+    - good afternoon
+
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+    - see you later
+    - take care
+    - bye bye
+    - have a nice day
+    - see ya
+    - catch you later
+    - I'm done
+    - that's all thanks
+    - thanks bye
+    - later
+    - peace out
+
+- intent: thank_you
+  examples: |
+    - thanks
+    - thank you
+    - thanks a lot
+    - thank you so much
+    - much appreciated
+    - that was helpful
+    - thanks for the help
+    - cheers
+    - ty
+    - thx
+    - I appreciate it
+    - wonderful, thanks
+
+- intent: affirm
+  examples: |
+    - yes
+    - yeah
+    - yep
+    - sure
+    - sounds good
+    - go ahead
+    - okay
+    - perfect
+    - awesome
+    - great
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
+    - are you real?
+    - are you AI?
+    - are you a chatbot?
+    - is this a robot?
+    - who am I chatting with?
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  PRODUCT SEARCH (With Roles, Groups, Brands & Synonyms)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: search_product
+  examples: |
+    - do you have [wireless mouse](product_name)?
+    - search for [mechanical keyboard](product_name)
+    - I'm looking for a [USB-C hub](product_name)
+    - find [noise cancelling headphones](product_name)
+    - tell me about [wireless mouse](product_name)
+    - do you sell [keyboard](product_name)
+    - can I buy a [portable speaker](product_name)
+    - check if [gaming mouse](product_name) is in stock
+    - show me [bluetooth earbuds](product_name){"value": "noise cancelling headphones"}
+    - I want to buy [monitor](product_name)
+    - looking for [ergonomic keyboard](product_name)
+    - details on [4K display](product_name){"value": "monitor"}
+    - what is the cost of [headphones](product_name)?
+    - do you have any [SSD](product_name) in stock?
+    - any [keeb](product_name){"value": "mechanical keyboard"} available?
+    - I want a [curved monitor](product_name)
+    - I need some [earphones](product_name){"value": "noise cancelling headphones"}
+    - I need something to listen to music on the train
+    - my wrist hurts when I type
+    - gear for competitive gaming
+    - show me [LG](brand) [monitors](product_name)
+    - do you have any [Logitech](brand) [wireless mouse](product_name)?
+    - find [Samsung](brand) [SSD](product_name)
+    - show me [Sony](brand) [headphones](product_name)
+    - I want a [Keychron](brand) [mechanical keyboard](product_name)
+    - search for [Anker](brand) [USB-C hub](product_name)
+    - show me [ASUS](brand) [monitor](product_name)
+    - show me [monitors](product_name) under [$300](price:max)
+    - find a [mechanical keyboard](product_name) below [$100](price:max)
+    - [gaming mouse](product_name) under [150](price:max) dollars
+    - looking for [headphones](product_name) above [$200](price:min)
+    - show me [monitors](product_name) between [$200](price:min) and [$320](price:max)
+    - find [keyboards](product_name) from [$80](price:min) to [$120](price:max)
+    - I need [LG](brand) [monitors](product_name) between [$250](price:min) and [$350](price:max)
+    - [Logitech](brand) [mouse](product_name) under [$110](price:max)
+    - do you have [2]{"entity": "quantity", "group": "1"} [wireless mouse]{"entity": "product_name", "group": "1"} and [1]{"entity": "quantity", "group": "2"} [USB-C hub]{"entity": "product_name", "group": "2"}
+    - I need [3]{"entity": "quantity", "group": "1"} [monitors]{"entity": "product_name", "group": "1"} and [2]{"entity": "quantity", "group": "2"} [mechanical keyboards]{"entity": "product_name", "group": "2"}
+    - check stock for [1]{"entity": "quantity", "group": "1"} [gaming mouse]{"entity": "product_name", "group": "1"} and [2]{"entity": "quantity", "group": "2"} [portable speakers]{"entity": "product_name", "group": "2"}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SIDE-BY-SIDE HARDWARE SPEC COMPARISON (Entity Roles: compare_1 vs compare_2)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: compare_products
+  examples: |
+    - compare [UltraGear](product_name:compare_1) with [Odyssey](product_name:compare_2)
+    - compare [LG UltraGear](product_name:compare_1) and [Samsung Odyssey](product_name:compare_2)
+    - compare [UltraGear Monitor](product_name:compare_1) with [Odyssey Monitor](product_name:compare_2)
+    - which is better [Keychron K2](product_name:compare_1) or [MX Keys](product_name:compare_2)?
+    - compare [G502](product_name:compare_1) vs [MX Master 3S](product_name:compare_2)
+    - difference between [ProArt](product_name:compare_1) and [UltraGear](product_name:compare_2)
+    - compare [Sony WH-1000XM5](product_name:compare_1) with [Soundcore Motion+](product_name:compare_2)
+    - can you compare [Keychron](product_name:compare_1) and [Logitech keyboard](product_name:compare_2)?
+    - [LG monitor](product_name:compare_1) vs [ASUS monitor](product_name:compare_2) specs
+    - show me a side by side comparison of [UltraGear](product_name:compare_1) and [Odyssey](product_name:compare_2)
+    - compare hardware specs between [G502 X Plus](product_name:compare_1) and [MX Master](product_name:compare_2)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  PROMO COUPONS & TIER ELIGIBILITY ENGINE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: check_coupons
+  examples: |
+    - do you have any coupons?
+    - show me active promo codes
+    - are there any discounts or offers available?
+    - what coupons can I use?
+    - check if I am eligible for [PRIME30](coupon_code)
+    - can I apply coupon [PRIME30](coupon_code)?
+    - test promo code [NOVA20](coupon_code)
+    - how much discount does [WELCOME10](coupon_code) give?
+    - how much will the [UltraGear](product_name) cost with [PRIME30](coupon_code)?
+    - calculate price of [Odyssey](product_name) using [NOVA20](coupon_code)
+    - apply [WELCOME10](coupon_code) on [Keychron K2](product_name)
+    - what Prime exclusive coupons do I have?
+    - check coupon eligibility
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  ORDER STATUS CHECK (With Order IDs & Tracking Numbers)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: check_order_status
+  examples: |
+    - where is my order?
+    - track my orders
+    - show my active orders
+    - what is the status of order [1](order_id)?
+    - track my order [2](order_id)
+    - where is order [3](order_id)?
+    - check order [4](order_id) status
+    - order status for [5](order_id)
+    - can you check order number [1](order_id)?
+    - I want to know about order [2](order_id)
+    - has order [3](order_id) shipped?
+    - tell me the status of [4](order_id)
+    - update on order [5](order_id)
+    - please track order [1](order_id)
+    - where is my order [2](order_id)?
+    - track package [TRK-901122](tracking_number)
+    - check tracking number [TRK-904581](tracking_number)
+    - where is shipment [TRK-771039](tracking_number)?
+    - status for [TRK-553910](tracking_number)
+    - inspect order [1](order_id)
+    - check order [2](order_id)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SMART ORDER CANCELLATION (Swiggy / Amazon State Guardrail)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: cancel_order
+  examples: |
+    - cancel my order
+    - I want to cancel order [2](order_id)
+    - please cancel order [4](order_id)
+    - cancel order [5](order_id)
+    - can I cancel my order [1](order_id)?
+    - stop shipment for order [3](order_id)
+    - cancel order number [2](order_id) immediately
+    - I ordered by mistake, cancel order [4](order_id)
+    - abort my order [5](order_id)
+    - how do I cancel an order?
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  NOVA WALLET & SUPPORT TICKET TRIAGE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: check_wallet
+  examples: |
+    - what is my wallet balance?
+    - check my Nova Wallet
+    - how much money is in my wallet?
+    - show my wallet balance and tier status
+    - did my refund get credited to my wallet?
+    - check my Nova credits
+    - what is my membership tier and balance?
+    - view wallet ledger
+
+- intent: support_ticket
+  examples: |
+    - check my support tickets
+    - show my open tickets
+    - what is the status of my support ticket?
+    - talk to a human agent
+    - connect me to customer support
+    - escalate this to a live agent
+    - I need urgent help from a human
+    - open a support ticket
+    - check warranty ticket status
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  ORDER RETURN REQUEST (Triggers Form)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: request_return
+  examples: |
+    - I want to return my order
+    - how do I return a product?
+    - I need to return something
+    - I'd like to request a return
+    - can I return order [1](order_id)?
+    - return order [2](order_id)
+    - I want a refund for order [3](order_id)
+    - the product is defective, I want to return it
+    - I received the wrong item
+    - I want to return order [1](order_id) because [it's defective](reason_for_return)
+    - please process a return for order [3](order_id)
+    - return request for [1](order_id)
+    - I need to send back my order
+    - initiate a return please
+
+- intent: inform
+  examples: |
+    - [1](order_id)
+    - [2](order_id)
+    - [3](order_id)
+    - [4](order_id)
+    - order [2](order_id)
+    - it's [3](order_id)
+    - [defective product](reason_for_return)
+    - [wrong item received](reason_for_return)
+    - [changed my mind](reason_for_return)
+    - [doesn't match the description](reason_for_return)
+    - [arrived damaged](reason_for_return)
+    - [dead pixels on screen](reason_for_return)
+    - [better price elsewhere](reason_for_return)
+    - the reason is [wrong size](reason_for_return)
+    - because [it stopped working](reason_for_return)
+    - my order number is [1](order_id)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  POLICY & RAG FAQ (With Product Entity Disambiguation)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: ask_policy
+  examples: |
+    - What is your return policy?
+    - How long does shipping take?
+    - Do you offer international shipping?
+    - Is there a warranty on [monitors](product_name)?
+    - How do I get a refund?
+    - How long do refunds take to process?
+    - tell me about your shipping rules
+    - I spilled water on my [monitor](product_name), is it covered?
+    - does the warranty cover water damage on a [keyboard](product_name)?
+    - my [speaker](product_name) is broken, is it under warranty?
+    - what happens if I drop my [wireless mouse](product_name)?
+    - is accidental damage covered under warranty?
+    - how many days do I have to return a [monitor](product_name)?
+    - can you ship my order to Germany?
+    - what are your business hours?
+    - what payment methods do you accept?
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  OUT OF SCOPE & CANCEL
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- intent: out_of_scope
+  examples: |
+    - what's the weather like?
+    - tell me a joke
+    - who is the president?
+    - can you book a flight for me?
+    - play some music
+    - what's the meaning of life?
+    - translate this to Spanish
+    - help me with my homework
+    - what's 2 + 2?
+    - set an alarm for 7am
+    - order me a pizza
+    - call a taxi
+    - how tall is the Eiffel Tower?
+    - sing me a song
+    - what's the stock price of Apple?
+
+- intent: cancel
+  examples: |
+    - stop
+    - cancel
+    - nevermind
+    - abort
+    - quit
+    - I changed my mind
+    - exit
+
+- intent: generate_admin_report
+  examples: |
+    - Generate the daily report
+    - Download the inventory PDF
+    - I need the operations snapshot
+    - Generate admin report
+    - Get the daily system report
+    - Download the daily stock and promo report
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SYNONYMS — Normalizes User Slang to Canonical Catalog Terms
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- synonym: monitor
+  examples: |
+    - display
+    - screen
+    - 4K display
+    - gaming display
+    - monitors
+
+- synonym: mechanical keyboard
+  examples: |
+    - keeb
+    - mech board
+    - tactile keyboard
+    - typing device
+    - mechanical keyboards
+
+- synonym: wireless mouse
+  examples: |
+    - cordless mouse
+    - bluetooth mouse
+    - mice
+    - wireless mice
+
+- synonym: noise cancelling headphones
+  examples: |
+    - ANC headphones
+    - bluetooth earbuds
+    - earpods
+    - earphones
+    - over-ear headphones
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  LOOKUP TABLES — Explicit Brand & Coupon Dictionaries
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- lookup: brand
+  examples: |
+    - LG
+    - Samsung
+    - ASUS
+    - Keychron
+    - Logitech
+    - Sony
+    - Anker
+
+- lookup: coupon_code
+  examples: |
+    - WELCOME10
+    - NOVA20
+    - PRIME30
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  REGEX — Strict Pattern Matching for Structured Entities
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- regex: order_id
+  examples: |
+    - \b\d{1,5}\b
+
+- regex: tracking_number
+  examples: |
+    - TRK-\d{6}
+
+- regex: price
+  examples: |
+    - \$?\d{2,4}
